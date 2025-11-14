@@ -320,5 +320,9 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pythonvanilla,visualstudiocode,pycharm+all,jupyternotebooks
 
+
+# ANDERSONBRAZ
+
 page/
 *Zone.Identifier
+linkbio.egg-info/

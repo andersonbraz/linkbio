@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linkbio"
+version = "0.1.0"
+authors = [
+  { name="Anderson Braz", email="contato@andersonbraz.com" },
+]
+description = "Um gerador de páginas 'link in bio' estáticas em Python."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "click",
+    "pyyaml",
+    "jinja2",
+    "requests",
+]
+
+[project.urls]
+Homepage = "https://github.com/andersonbraz/linkbio"
+"Bug Tracker" = "https://github.com/andersonbraz/linkbio/issues"
+
+[project.scripts]
+linkbio = "linkbio.cli:cli"

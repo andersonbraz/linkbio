@@ -293,5 +293,5 @@ def preview(port, path):
         logger.info("Limpeza do diretório de trabalho concluída.")
 
 
-if __name__ == "__main__":
-    cli()
+# if __name__ == "__main__":
+#     cli()
