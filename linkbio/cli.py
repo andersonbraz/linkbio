@@ -5,6 +5,7 @@ import http.server
 import socketserver
 import os
 import requests
+import subprocess
 import shutil
 from pathlib import Path
 from typing import Dict, Any
@@ -40,6 +41,24 @@ TEMPLATE_FILES = [
     "script.js.jinja2",
     "style.css.jinja2"
 ]
+
+def _run_command(command: list, cwd: Path, error_message: str):
+    """Executa um comando de shell e levanta um erro em caso de falha."""
+    logger.info(f"Executando comando: {' '.join(command)} em {cwd}")
+    try:
+        # Executa o comando, capturando a saída e garantindo que o retorno seja 0
+        result = subprocess.run(command, cwd=cwd, check=True, 
+                                capture_output=True, text=True)
+        logger.info(f"Comando executado com sucesso. Saída: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"{error_message}: {e.stderr}")
+        click.echo(f"❌ Erro de Deploy: {error_message}")
+        click.echo(f"Detalhes do erro: {e.stderr}")
+        raise
+    except FileNotFoundError:
+        click.echo("❌ Erro: O comando 'git' não foi encontrado. Certifique-se de que o Git está instalado e no seu PATH.")
+        raise
+    return result
 
 class LinkBioGenerator:
     """
@@ -224,6 +243,103 @@ social:
             logger.error(f"Erro durante a renderização ou escrita: {e}")
             click.echo(f"❌ Erro durante o build: {e}")
 
+    def _get_github_remote_url(self) -> str:
+        """Obtém a URL do repositório remoto (origin) do projeto raiz."""
+        logger.info("Tentando obter a URL do repositório remoto.")
+        try:
+            # Comando: git config --get remote.origin.url
+            result = _run_command(
+                ['git', 'config', '--get', 'remote.origin.url'],
+                cwd=self.root_dir,
+                error_message="Não foi possível obter a URL do repositório remoto. Verifique se a pasta é um repositório Git e se 'origin' está configurado."
+            )
+            url = result.stdout.strip()
+            # Garante que a URL é a forma HTTPS/SSH para evitar problemas de autenticação
+            if url.startswith('git@'):
+                # Ex: git@github.com:user/repo.git -> https://github.com/user/repo.git
+                url = url.replace('git@github.com:', 'https://github.com/').replace('.git', '') + '.git'
+            elif url.startswith('https://'):
+                pass
+            else:
+                 raise ValueError("URL remota não reconhecida.")
+            
+            logger.info(f"URL remota obtida: {url}")
+            return url
+
+        except Exception as e:
+            # Não conseguindo obter a URL, pede-se que o usuário a insira
+            click.echo(f"⚠️ Aviso: Falha ao detectar URL remota. {e}")
+            url = input("Por favor, insira a URL SSH/HTTPS completa do seu repositório GitHub: ").strip()
+            return url
+
+
+    def publish(self) -> None:
+        """
+        Gera o conteúdo e faz o deploy do diretório 'page/' para a branch 'gh-pages'.
+        """
+        click.echo("🛠️ Executando build antes do deploy...")
+        self.build() # Garante que o conteúdo de 'page/' está atualizado
+
+        if not self.output_dir.is_dir():
+            click.echo(f"❌ Erro: Diretório de deploy esperado ({self.output_dir}) não encontrado após o build.")
+            return
+
+        # 1. Obter a URL do repositório
+        repo_url = self._get_github_remote_url()
+        if not repo_url:
+            click.echo("❌ Deploy cancelado: URL do repositório inválida.")
+            return
+
+        # 2. Configuração do deploy
+        deploy_dir = self.output_dir
+        branch = 'gh-pages'
+        temp_git_dir = deploy_dir / ".git"
+
+        click.echo(f"\n🚀 Iniciando deploy do conteúdo de {deploy_dir} para {branch}...")
+
+        try:
+            # Limpa qualquer repo Git anterior dentro de page/
+            if temp_git_dir.is_dir():
+                shutil.rmtree(temp_git_dir)
+                logger.info("Diretório .git temporário anterior removido.")
+            
+            # --- Sequência de comandos Git dentro da pasta 'page/' ---
+            
+            # Inicializa um novo repositório Git
+            _run_command(['git', 'init'], cwd=deploy_dir, error_message="Falha ao inicializar Git.")
+
+            # Adiciona o remote
+            _run_command(['git', 'remote', 'add', 'origin', repo_url], cwd=deploy_dir, error_message="Falha ao adicionar remote.")
+
+            # Adiciona todos os arquivos e faz o commit
+            _run_command(['git', 'add', '-A'], cwd=deploy_dir, error_message="Falha ao adicionar arquivos.")
+            _run_command(['git', 'commit', '-m', 'Deploy LinkBio: ' + Path.cwd().name], 
+                         cwd=deploy_dir, error_message="Falha ao commitar arquivos.")
+
+            # Força o push para o branch gh-pages (cria se não existir)
+            # -u define a branch remota; master:gh-pages garante que a branch local 'master' 
+            # (ou 'main' se for o caso do init) seja mapeada para 'gh-pages' no remote.
+            # O '--force' é crucial para sobrescrever o histórico da gh-pages (que é o que queremos com build artifacts).
+            _run_command(['git', 'push', '-u', 'origin', 'master:' + branch, '--force'], 
+                         cwd=deploy_dir, 
+                         error_message=f"Falha ao fazer push para {branch}. Verifique suas credenciais Git/GitHub.")
+
+            click.echo(f"\n✅ Deploy para o branch '{branch}' concluído com sucesso!")
+            click.echo("   Pode levar alguns minutos para que sua página esteja online.")
+            
+        except Exception:
+            # Se qualquer comando falhar, o erro já foi reportado em _run_command.
+            pass
+            
+        finally:
+            # 3. Limpeza: remove o repositório Git temporário da pasta 'page/'
+            if temp_git_dir.is_dir():
+                try:
+                    shutil.rmtree(temp_git_dir)
+                    logger.info("Limpeza do diretório .git temporário finalizada.")
+                except Exception as e:
+                    logger.error(f"Falha na limpeza do .git temporário: {e}")
+
 @click.group()
 def cli():
     """linkbio - Gerador de páginas 'link in bio' estáticas."""
@@ -292,6 +408,21 @@ def preview(port, path):
         os.chdir(original_cwd)
         logger.info("Limpeza do diretório de trabalho concluída.")
 
-
+@cli.command()
+@click.option('--path', default='.', help='Diretório raiz do projeto.')
+def publish(path):
+    """
+    Roda o build e faz o deploy do diretório 'page/' para a branch 'gh-pages'.
+    """
+    root_dir = Path(path).resolve()
+    generator = LinkBioGenerator(root_dir)
+    try:
+        generator.publish()
+    except Exception as e:
+        logger.error(f"Falha no comando publish: {e}")
+        # A mensagem de erro principal já foi exibida por _run_command
+        if not isinstance(e, subprocess.CalledProcessError) and not isinstance(e, FileNotFoundError):
+             click.echo("❌ O comando de publicação falhou. Verifique os logs.")
+             
 # if __name__ == "__main__":
 #     cli()
