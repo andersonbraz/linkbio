@@ -8,7 +8,7 @@ url_author: 'https://andersonbraz.com'
 fav_icon: 'href="https://github.githubassets.com/favicons/favicon-dark.png"'
 
 nav:
-  - text: 'Documentação'
+  - text: 'Awesome Data Journey'
     url: 'https://andersonbraz.github.io'
   - text: 'Blog'
     url: 'https://andersonbraz.com'
