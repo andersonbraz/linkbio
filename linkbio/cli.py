@@ -150,7 +150,9 @@ nav:
     url: 'https://andersonbraz.com'
   - text: 'Credenciais'
     url: 'https://www.credly.com/users/andersonbraz/badges'
-    
+  - text: 'Currículo'
+    url: 'https://www.self.so/andersonbraz'
+
 social:
   - icon: 'logo-github'
     url: 'https://github.com/andersonbraz'
@@ -158,6 +160,8 @@ social:
     url: 'https://instagram.com/andersonbraz_coder'
   - icon: 'logo-youtube'
     url: 'https://youtube.com/@andersonbraz_coder'
+  - icon: 'logo-twitch'
+    url: 'https://www.twitch.tv/andersonbraz_coder'
   - icon: 'logo-linkedin'
     url: 'https://linkedin.com/in/anderson-braz'
 """
@@ -424,5 +428,5 @@ def publish(path):
         if not isinstance(e, subprocess.CalledProcessError) and not isinstance(e, FileNotFoundError):
              click.echo("❌ O comando de publicação falhou. Verifique os logs.")
              
-# if __name__ == "__main__":
-#     cli()
+if __name__ == "__main__":
+    cli()

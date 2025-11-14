@@ -71,3 +71,7 @@ linkbio build
 ```shell
 linkbio publish
 ```
+
+## Example
+
+[https://andersonbraz.github.io/linkbio/](https://andersonbraz.github.io/linkbio/)
