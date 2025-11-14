@@ -22,7 +22,7 @@ pip install linkbio
 
 ## Set Infos
 
-Open and edit file linkbio.yaml with your datas.
+Edit file **linkbio.yaml** with your informations.
 
 Example:
 
