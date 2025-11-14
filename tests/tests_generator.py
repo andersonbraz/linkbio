@@ -1,13 +1,12 @@
+# Arquivo: tests/test_generator.py
+
 import pytest
 import yaml
 import shutil
 from pathlib import Path
 from unittest import mock
 
-# IMPORTANTE: Você deve ajustar o import abaixo para refletir a sua estrutura.
-# Se a classe LinkBioGenerator está em linkbio/__init__.py
-from linkbio import LinkBioGenerator 
-
+from linkbio.cli import LinkBioGenerator 
 
 # --- Fixtures de Ajuda ---
 
