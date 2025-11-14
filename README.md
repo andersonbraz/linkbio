@@ -1,16 +1,23 @@
 # LinkBio
 
+## Create Folder
+
+```shell
+mkdir bio && cd bio
+```
+
+## Start .env Python
+
+```shell
+python -m venv .venv
+source .venv\bin\activate
+python -m pip install --upgrade pip
+```
+
 ## Install
 
 ```shell
 pip install linkbio
-```
-
-## Start Page
-
-```shell
-mkdir bio && cd bio
-linkbio start .
 ```
 
 ## Set Infos
