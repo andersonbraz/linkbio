@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="container">
+        <div id="profile">
+            <center>
+                <img src="{{ avatar }}" alt="Avatar de {{ username }}." />
+                <p>@{{ username }}</p>
+            </center>
+        </div>
+        <div id="switch" onclick="toggleMode()">
+            <button></button>
+            <span></span>
+        </div>
+        <ul>
+            {% for item in nav %}
+                <li><a href="{{ item.url }}" target="_blank">{{ item.text }}</a></li>
+            {% endfor %}
+        </ul>
+        <div id="social-links">
+            {% for item in social %}
+                <a href="{{ item.url }}" target="_blank"><ion-icon name="{{ item.icon }}"></ion-icon></a>
+            {% endfor %}
+        </div>
+        <footer>
+            Feito com ♥ por <a href="{{ url_author }}">{{ name_author }}</a>
+        </footer>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="./script.js"></script>
+</body>
+</html>
