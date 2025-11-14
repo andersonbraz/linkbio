@@ -5,6 +5,7 @@ url: 'https://andersonbraz.github.io/bio/'
 description: 'Project git-pages with LinkBio.'
 name_author: 'Anderson Braz'
 url_author: 'https://andersonbraz.com'
+fav_icon: 'href="https://github.githubassets.com/favicons/favicon-dark.png"'
 
 nav:
   - text: 'Documentação'
