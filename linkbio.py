@@ -122,7 +122,7 @@ url: 'https://andersonbraz.github.io/bio/'
 description: 'Project git-pages with LinkBio.'
 name_author: 'Anderson Braz'
 url_author: 'https://andersonbraz.com'
-fav_icon: 'href="https://github.githubassets.com/favicons/favicon-dark.png"'
+fav_icon: 'https://raw.githubusercontent.com/andersonbraz/linkbio/main/assets/favicon.svg'
 
 nav:
   - text: 'Awesome Data Journey'
