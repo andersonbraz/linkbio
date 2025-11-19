@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from unittest import mock
 
-from linkbio.cli import LinkBioGenerator 
+from src.linkbio import LinkBioGenerator 
 
 # --- Fixtures de Ajuda ---
 

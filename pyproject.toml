@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "linkbio"
-version = "0.1.0"
+version = "0.3.0"
 authors = [
   { name="Anderson Braz", email="contato@andersonbraz.com" },
 ]
@@ -23,4 +23,10 @@ Homepage = "https://github.com/andersonbraz/linkbio"
 "Bug Tracker" = "https://github.com/andersonbraz/linkbio/issues"
 
 [project.scripts]
-linkbio = "linkbio.cli:cli"
+linkbio = "linkbio"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

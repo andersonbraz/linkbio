@@ -20,6 +20,10 @@ python -m pip install --upgrade pip
 pip install linkbio
 ```
 
+```shell
+linkbio
+```
+
 ## Set Infos
 
 Edit file **linkbio.yaml** with your informations.
