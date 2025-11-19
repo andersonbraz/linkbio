@@ -21,7 +21,7 @@ pip install linkbio
 ```
 
 ```shell
-linkbio
+linkbio start
 ```
 
 ## Set Infos
