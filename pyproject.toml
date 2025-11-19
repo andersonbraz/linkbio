@@ -23,7 +23,7 @@ Homepage = "https://github.com/andersonbraz/linkbio"
 "Bug Tracker" = "https://github.com/andersonbraz/linkbio/issues"
 
 [project.scripts]
-linkbio = "linkbio"
+linkbio = "linkbio:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
