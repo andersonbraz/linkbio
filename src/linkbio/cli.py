@@ -427,6 +427,9 @@ def publish(path):
         # A mensagem de erro principal já foi exibida por _run_command
         if not isinstance(e, subprocess.CalledProcessError) and not isinstance(e, FileNotFoundError):
              click.echo("❌ O comando de publicação falhou. Verifique os logs.")
-             
-if __name__ == "__main__":
+
+def main():
     cli()
+
+if __name__ == "__main__":
+    main()

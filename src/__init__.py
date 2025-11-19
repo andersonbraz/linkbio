@@ -1,1 +1,0 @@
-from .linkbio import main
